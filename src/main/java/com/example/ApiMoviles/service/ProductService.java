@@ -31,9 +31,7 @@ public class ProductService {
     }
 
     public List<Product> findByCategoria(Long categoriaId) {
-        Category categoria = categoriaRepository.findById(categoriaId).orElse(null);
-        if (categoria == null) return List.of();
-        return productoRepository.findByCategoryId(categoria);
+        return productoRepository.findByCategoryId(categoriaId);
     }
 
     public Product save(Product producto) {

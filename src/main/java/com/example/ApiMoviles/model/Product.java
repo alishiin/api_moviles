@@ -3,6 +3,7 @@ package com.example.ApiMoviles.model;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "products")
 public class Product {
 
     @Id
@@ -13,6 +14,10 @@ public class Product {
     private String descripcion;
     private double precio;
 
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
     public Product() {}
 
     public Long getId() { return id; }
@@ -22,4 +27,6 @@ public class Product {
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
     public double getPrecio() { return precio; }
     public void setPrecio(double precio) { this.precio = precio; }
+    public Category getCategory() { return category; }
+    public void setCategory(Category category) { this.category = category; }
 }

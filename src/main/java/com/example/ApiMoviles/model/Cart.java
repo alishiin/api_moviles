@@ -3,6 +3,7 @@ package com.example.ApiMoviles.model;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "cart")
 public class Cart {
 
     @Id

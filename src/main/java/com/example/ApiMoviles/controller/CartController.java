@@ -19,6 +19,6 @@ public class CartController {
 
     @GetMapping("/{userId}")
     public List<Cart> getCartByUser(@PathVariable Long userId) {
-        return cartService.findByUserId(userId);
+        return cartService.getCarritoByUserId(userId);
     }
 }
