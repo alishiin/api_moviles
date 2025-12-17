@@ -22,7 +22,9 @@ public class AuthController {
             String token = authService.register(
                     body.get("name"),
                     body.get("email"),
-                    body.get("password")
+                    body.get("password"),
+                    body.get("comuna"),
+                    body.get("region")
             );
             return ResponseEntity.ok(Map.of("token", token));
         } catch (RuntimeException e) {

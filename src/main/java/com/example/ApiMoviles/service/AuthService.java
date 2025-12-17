@@ -22,7 +22,7 @@ public class AuthService {
     }
 
 
-    public String register(String name, String email, String password) {
+    public String register(String name, String email, String password, String comuna, String region) {
 
         if (userRepository.findByEmail(email).isPresent()) {
             throw new RuntimeException("A user with this email already exists");
@@ -32,6 +32,8 @@ public class AuthService {
         user.setNombre(name);
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password));
+        user.setComuna(comuna);
+        user.setRegion(region);
 
         userRepository.save(user);
 

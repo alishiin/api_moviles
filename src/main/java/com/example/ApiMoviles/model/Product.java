@@ -18,6 +18,10 @@ public class Product {
     @JoinColumn(name = "category_id")
     private Category category;
 
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    private byte[] imagen;
+
     public Product() {}
 
     public Long getId() { return id; }
@@ -29,4 +33,6 @@ public class Product {
     public void setPrecio(double precio) { this.precio = precio; }
     public Category getCategory() { return category; }
     public void setCategory(Category category) { this.category = category; }
+    public byte[] getImagen() { return imagen; }
+    public void setImagen(byte[] imagen) { this.imagen = imagen; }
 }

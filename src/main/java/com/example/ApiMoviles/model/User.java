@@ -16,6 +16,8 @@ public class User {
     private String rut;
     private String password;
     private String rol;
+    private String comuna;
+    private String region;
 
     public User() {}
 
@@ -32,4 +34,8 @@ public class User {
     public void setPassword(String password) { this.password = password; }
     public String getRol() { return rol; }
     public void setRol(String rol) { this.rol = rol; }
+    public String getComuna() { return comuna; }
+    public void setComuna(String comuna) { this.comuna = comuna; }
+    public String getRegion() { return region; }
+    public void setRegion(String region) { this.region = region; }
 }
