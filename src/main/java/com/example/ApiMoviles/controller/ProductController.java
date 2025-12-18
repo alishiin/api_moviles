@@ -1,5 +1,6 @@
 package com.example.ApiMoviles.controller;
 
+import com.example.ApiMoviles.dto.ProductResponseDTO;
 import com.example.ApiMoviles.model.Product;
 import com.example.ApiMoviles.repository.ProductRepository;
 import org.springframework.http.HttpHeaders;
@@ -10,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/products")
@@ -22,15 +24,19 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public List<ProductResponseDTO> getAllProducts() {
+        return productRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Product> createProduct(
+    public ResponseEntity<ProductResponseDTO> createProduct(
             @RequestParam("nombre") String nombre,
             @RequestParam("descripcion") String descripcion,
-            @RequestParam("precio") double precio,
+            @RequestParam("precio") int precio,
+            @RequestParam("stock") int stock,
+            @RequestParam("tallasDisponibles") String tallasDisponibles,
             @RequestParam(value = "categoryId", required = false) Long categoryId,
             @RequestParam("imagen") MultipartFile imagenFile
     ) throws IOException {
@@ -38,6 +44,8 @@ public class ProductController {
         product.setNombre(nombre);
         product.setDescripcion(descripcion);
         product.setPrecio(precio);
+        product.setStock(stock);
+        product.setTallasDisponibles(tallasDisponibles);
 
         // Por ahora no resolvemos la Category para no tocar más servicios;
         // si necesitas asociar la categoría podemos hacerlo usando ProductService y CategoryRepository.
@@ -47,7 +55,21 @@ public class ProductController {
         }
 
         Product saved = productRepository.save(product);
-        return ResponseEntity.ok(saved);
+        return ResponseEntity.ok(convertToDTO(saved));
+    }
+
+    private ProductResponseDTO convertToDTO(Product product) {
+        return new ProductResponseDTO(
+                product.getId(),
+                product.getNombre(),
+                product.getDescripcion(),
+                product.getPrecio(),
+                product.getStock(),
+                product.getTallasDisponibles(),
+                product.getCategory() != null ? product.getCategory().getId() : null,
+                product.getCategory() != null ? product.getCategory().getNombre() : null,
+                product.getImagen() != null && product.getImagen().length > 0
+        );
     }
 
     @GetMapping(value = "/{id}/imagen")
