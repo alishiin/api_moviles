@@ -30,6 +30,14 @@ public class ProductController {
                 .collect(Collectors.toList());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductResponseDTO> getProductById(@PathVariable Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Producto con ID " + id + " no encontrado"));
+
+        return ResponseEntity.ok(convertToDTO(product));
+    }
+
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProductResponseDTO> createProduct(
             @RequestParam("nombre") String nombre,
@@ -56,6 +64,50 @@ public class ProductController {
 
         Product saved = productRepository.save(product);
         return ResponseEntity.ok(convertToDTO(saved));
+    }
+
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ProductResponseDTO> updateProduct(
+            @PathVariable Long id,
+            @RequestParam("nombre") String nombre,
+            @RequestParam("descripcion") String descripcion,
+            @RequestParam("precio") int precio,
+            @RequestParam("stock") int stock,
+            @RequestParam("tallasDisponibles") String tallasDisponibles,
+            @RequestParam(value = "categoryId", required = false) Long categoryId,
+            @RequestParam(value = "imagen", required = false) MultipartFile imagenFile
+    ) throws IOException {
+
+        // Verificar que el producto existe
+        Product existingProduct = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Producto con ID " + id + " no encontrado"));
+
+        // Actualizar los campos
+        existingProduct.setNombre(nombre);
+        existingProduct.setDescripcion(descripcion);
+        existingProduct.setPrecio(precio);
+        existingProduct.setStock(stock);
+        existingProduct.setTallasDisponibles(tallasDisponibles);
+
+        // Actualizar imagen solo si se proporciona una nueva
+        if (imagenFile != null && !imagenFile.isEmpty()) {
+            existingProduct.setImagen(imagenFile.getBytes());
+        }
+
+        // Guardar el producto actualizado
+        Product savedProduct = productRepository.save(existingProduct);
+        return ResponseEntity.ok(convertToDTO(savedProduct));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+        // Verificar que el producto existe antes de eliminarlo
+        if (!productRepository.existsById(id)) {
+            throw new RuntimeException("Producto con ID " + id + " no encontrado");
+        }
+
+        productRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
     private ProductResponseDTO convertToDTO(Product product) {
