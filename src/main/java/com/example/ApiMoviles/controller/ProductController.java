@@ -86,4 +86,26 @@ public class ProductController {
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_JPEG_VALUE)
                 .body(product.getImagen());
     }
+
+    @GetMapping("/test-schema")
+    public ResponseEntity<String> testSchema() {
+        try {
+            List<Product> products = productRepository.findAll();
+            StringBuilder info = new StringBuilder();
+            info.append("Productos encontrados: ").append(products.size()).append("\n");
+
+            if (!products.isEmpty()) {
+                Product firstProduct = products.get(0);
+                info.append("Primer producto - ID: ").append(firstProduct.getId()).append("\n");
+                info.append("Nombre: ").append(firstProduct.getNombre()).append("\n");
+                info.append("Precio: ").append(firstProduct.getPrecio()).append("\n");
+                info.append("Stock: ").append(firstProduct.getStock()).append("\n");
+                info.append("Tallas: ").append(firstProduct.getTallasDisponibles()).append("\n");
+            }
+
+            return ResponseEntity.ok(info.toString());
+        } catch (Exception e) {
+            return ResponseEntity.ok("Error al acceder a productos: " + e.getMessage());
+        }
+    }
 }

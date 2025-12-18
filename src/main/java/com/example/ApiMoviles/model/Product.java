@@ -8,14 +8,19 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
+    @Column(name = "nombre", nullable = false, length = 255)
     private String nombre;
-    private String descripcion;
 
+    @Column(name = "descripcion", columnDefinition = "TEXT")
+    private String descripcion;
     // Precio como entero (sin puntos ni comas)
+    @Column(name = "precio", nullable = false)
     private int precio;
 
+    @Column(name = "stock", nullable = false, columnDefinition = "INTEGER DEFAULT 0")
     private int stock;
 
     @ManyToOne
@@ -27,6 +32,7 @@ public class Product {
     private byte[] imagen;
 
     // Tallas disponibles como string separado por comas
+    @Column(name = "tallas_disponibles", length = 500)
     private String tallasDisponibles;
 
     public Product() {}
